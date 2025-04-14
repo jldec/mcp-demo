@@ -1,16 +1,16 @@
-import useTheme from "@/hooks/useTheme";
-import { cn } from "@/lib/utils";
-import { Moon, Sun } from "@phosphor-icons/react";
-import { useState } from "react";
+import useTheme from '@/hooks/useTheme'
+import { cn } from '@/lib/utils'
+import { Moon, Sun } from '@phosphor-icons/react'
+import { useState } from 'react'
 
 const ThemeSelector = () => {
-  const [theme, setTheme] = useState<"dark" | "light">("light");
+  const [theme, setTheme] = useState<'dark' | 'light'>('light')
 
-  useTheme(theme);
+  useTheme(theme)
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
-  };
+    setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'))
+  }
 
   return (
     <button
@@ -20,18 +20,18 @@ const ThemeSelector = () => {
     >
       <Moon
         weight="bold"
-        className={cn("hidden", {
-          "animate-fade block": theme === "dark",
+        className={cn('hidden', {
+          'animate-fade block': theme === 'dark',
         })}
       />
       <Sun
         weight="bold"
-        className={cn("animate-fade block", {
-          hidden: theme === "dark",
+        className={cn('animate-fade block', {
+          hidden: theme === 'dark',
         })}
       />
     </button>
-  );
-};
+  )
+}
 
-export default ThemeSelector;
+export default ThemeSelector

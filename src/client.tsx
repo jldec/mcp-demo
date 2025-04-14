@@ -1,9 +1,9 @@
-import "./styles.css";
-import { createRoot } from "react-dom/client";
-import App from "./app";
-import { Providers } from "@/providers";
+import './styles.css'
+import { createRoot } from 'react-dom/client'
+import App from './app'
+import { Providers } from '@/providers'
 
-const root = createRoot(document.getElementById("app")!);
+const root = createRoot(document.getElementById('app')!)
 
 root.render(
   <Providers>
@@ -11,4 +11,4 @@ root.render(
       <App />
     </div>
   </Providers>
-);
+)

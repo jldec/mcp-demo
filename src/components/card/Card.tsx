@@ -1,13 +1,13 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 
 type CardProps = {
-  as?: React.ElementType;
-  children?: React.ReactNode;
-  className?: string;
-  ref?: React.Ref<HTMLElement>;
-  tabIndex?: number;
-  variant?: "primary" | "secondary" | "ghost" | "destructive";
-};
+  as?: React.ElementType
+  children?: React.ReactNode
+  className?: string
+  ref?: React.Ref<HTMLElement>
+  tabIndex?: number
+  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive'
+}
 
 export const Card = ({
   as,
@@ -15,16 +15,16 @@ export const Card = ({
   className,
   ref,
   tabIndex,
-  variant = "secondary",
+  variant = 'secondary',
 }: CardProps) => {
-  const Component = as ?? "div";
+  const Component = as ?? 'div'
   return (
     <Component
       className={cn(
-        "w-full rounded-lg p-4",
+        'w-full rounded-lg p-4',
         {
-          "btn-primary": variant === "primary",
-          "btn-secondary": variant === "secondary",
+          'btn-primary': variant === 'primary',
+          'btn-secondary': variant === 'secondary',
         },
         className
       )}
@@ -33,5 +33,5 @@ export const Card = ({
     >
       {children}
     </Component>
-  );
-};
+  )
+}

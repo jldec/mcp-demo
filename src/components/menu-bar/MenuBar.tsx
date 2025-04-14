@@ -1,24 +1,18 @@
-import { Tooltip } from "@/components/tooltip/Tooltip";
-import { useMenuNavigation } from "@/hooks/useMenuNavigation";
-import { cn } from "@/lib/utils";
-import { IconContext } from "@phosphor-icons/react";
-import { useRef } from "react";
+import { Tooltip } from '@/components/tooltip/Tooltip'
+import { useMenuNavigation } from '@/hooks/useMenuNavigation'
+import { cn } from '@/lib/utils'
+import { IconContext } from '@phosphor-icons/react'
+import { useRef } from 'react'
 
 type MenuOptionProps = {
-  icon: React.ReactNode;
-  id?: number;
-  isActive?: number | boolean | string | undefined;
-  onClick: () => void;
-  tooltip: string;
-};
+  icon: React.ReactNode
+  id?: number
+  isActive?: number | boolean | string | undefined
+  onClick: () => void
+  tooltip: string
+}
 
-const MenuOption = ({
-  icon,
-  id,
-  isActive,
-  onClick,
-  tooltip,
-}: MenuOptionProps) => (
+const MenuOption = ({ icon, id, isActive, onClick, tooltip }: MenuOptionProps) => (
   <Tooltip
     content={tooltip}
     id={id}
@@ -27,10 +21,9 @@ const MenuOption = ({
     <button
       type="button"
       className={cn(
-        "text-ob-base-100 hover:text-ob-base-300 border-ob-border focus:inset-ring-focus focus-visible:border-ob-focus relative -ml-px flex h-full w-11 cursor-pointer items-center justify-center border transition-colors focus:z-10 focus:outline-none focus-visible:z-10 focus-visible:inset-ring-[0.5]",
+        'text-ob-base-100 hover:text-ob-base-300 border-ob-border focus:inset-ring-focus focus-visible:border-ob-focus relative -ml-px flex h-full w-11 cursor-pointer items-center justify-center border transition-colors focus:z-10 focus:outline-none focus-visible:z-10 focus-visible:inset-ring-[0.5]',
         {
-          "text-ob-base-300 bg-ob-base-200 focus-visible:border-ob-focus":
-            isActive === id,
+          'text-ob-base-300 bg-ob-base-200 focus-visible:border-ob-focus': isActive === id,
         }
       )}
       onClick={onClick}
@@ -38,14 +31,14 @@ const MenuOption = ({
       <IconContext.Provider value={{ size: 18 }}>{icon}</IconContext.Provider>
     </button>
   </Tooltip>
-);
+)
 
 type MenuBarProps = {
-  className?: string;
-  isActive: number | boolean | string | undefined;
-  options: MenuOptionProps[];
-  optionIds?: boolean;
-};
+  className?: string
+  isActive: number | boolean | string | undefined
+  options: MenuOptionProps[]
+  optionIds?: boolean
+}
 
 export const MenuBar = ({
   className,
@@ -53,16 +46,13 @@ export const MenuBar = ({
   options,
   optionIds = false, // if option needs an extra unique ID
 }: MenuBarProps) => {
-  const menuRef = useRef<HTMLElement | null>(null);
+  const menuRef = useRef<HTMLElement | null>(null)
 
-  useMenuNavigation({ menuRef, direction: "horizontal" });
+  useMenuNavigation({ menuRef, direction: 'horizontal' })
 
   return (
     <nav
-      className={cn(
-        "bg-ob-base-100 flex rounded-lg shadow-xs transition-colors",
-        className
-      )}
+      className={cn('bg-ob-base-100 flex rounded-lg shadow-xs transition-colors', className)}
       ref={menuRef}
     >
       {options.map((option, index) => (
@@ -75,5 +65,5 @@ export const MenuBar = ({
         />
       ))}
     </nav>
-  );
-};
+  )
+}
