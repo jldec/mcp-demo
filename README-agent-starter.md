@@ -6,8 +6,9 @@ A starter template for building AI-powered chat agents using Cloudflare's Agent 
 
 - replace npm with pnpm - see https://pnpm.io/
 - added .npmrc to disable pnpm-lockfile.json
-- removed  .cursor/rules/cloudflare.mdc
 - removed vitest and tests folder
+- removed  .cursor/rules/cloudflare.mdc
+- removed .github/workflows/sanity-check.yml
 - removed biome linter
 - changed .prettierrc to use single quotes and spaces
 - reformatted files with prettier

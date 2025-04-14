@@ -1,15 +1,15 @@
 # MCP Demo
-Simple hosted multiplayer chat with AI and MCP tools
-Based on cloudflare/agents-starter - see [README-agent-starter.md](README-agent-starter.md)
+Simple hosted multiplayer chat with AI and MCP tools  
+Based on cloudflare/agents-starter - see [README-agent-starter.md](README-agent-starter.md)  
 NOTE: this repo assumes pnpm
 
 ## Working
-- https://mcp-demo.jldec.me
-- login
+- running on cloudflare workers
+- login with cloudflare zero-trust access
 
 ## TODO next
-- Add installable (remote) tools and remove built in tools
-- Replace starter UI with simple monospace style (like https://jldec.me?chat)
+- add installable (remote) tools and remove built in tools
+- replace starter UI with simple monospace style (like https://jldec.me?chat)
 
 ## Target for demo day 1
 
