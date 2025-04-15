@@ -91,10 +91,10 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-[100vh] w-full p-4 flex justify-center items-center bg-fixed overflow-hidden">
+    <div className="h-[100vh] w-full flex justify-center items-center bg-fixed overflow-hidden">
       <HasOpenAIKey />
-      <div className="h-[calc(100vh-2rem)] w-full mx-auto max-w-lg flex flex-col shadow-xl rounded-md overflow-hidden relative border border-neutral-300 dark:border-neutral-800">
-        <div className="px-4 py-3 border-b border-neutral-300 dark:border-neutral-800 flex items-center gap-3 sticky top-0 z-10">
+      <div className="h-[100vh] w-full flex flex-col overflow-hidden relative">
+        <div className="px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
           <div className="flex items-center justify-center h-8 w-8">
             <svg width="28px" height="28px" className="text-[#F48120]" data-icon="agents">
               <title>Cloudflare Agents</title>
@@ -152,10 +152,10 @@ export default function Chat() {
                     <Robot size={24} />
                   </div>
                   <h3 className="font-semibold text-lg">Welcome to AI Chat</h3>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-muted-foreground">
                     Start a conversation with your AI assistant. Try asking about:
                   </p>
-                  <ul className="text-sm text-left space-y-2">
+                  <ul className="text-left space-y-2">
                     <li className="flex items-center gap-2">
                       <span className="text-[#F48120]">•</span>
                       <span>Weather information for any city</span>
@@ -178,7 +178,7 @@ export default function Chat() {
             return (
               <div key={m.id}>
                 {showDebug && (
-                  <pre className="text-xs text-muted-foreground overflow-scroll">
+                  <pre className="text-muted-foreground overflow-scroll">
                     {JSON.stringify(m, null, 2)}
                   </pre>
                 )}
@@ -213,7 +213,7 @@ export default function Chat() {
                                   {part.text.startsWith('scheduled message') && (
                                     <span className="absolute -top-3 -left-2 text-base">🕒</span>
                                   )}
-                                  <p className="text-sm whitespace-pre-wrap">
+                                  <p className="whitespace-pre-wrap">
                                     {part.text.replace(/^scheduled message: /, '')}
                                   </p>
                                 </Card>
@@ -252,10 +252,10 @@ export default function Chat() {
                                   </div>
 
                                   <div className="mb-3">
-                                    <h5 className="text-xs font-medium mb-1 text-muted-foreground">
+                                    <h5 className="font-medium mb-1 text-muted-foreground">
                                       Arguments:
                                     </h5>
-                                    <pre className="bg-background/80 p-2 rounded-md text-xs overflow-auto">
+                                    <pre className="bg-background/80 p-2 rounded-md overflow-auto">
                                       {JSON.stringify(toolInvocation.args, null, 2)}
                                     </pre>
                                   </div>
@@ -316,7 +316,7 @@ export default function Chat() {
               },
             })
           }
-          className="p-3 bg-input-background absolute bottom-0 left-0 right-0 z-10 border-t border-neutral-300 dark:border-neutral-800"
+          className="p-3 bg-input-background absolute bottom-0 left-0 right-0 z-10"
         >
           <div className="flex items-center gap-2">
             <div className="flex-1 relative">
@@ -405,7 +405,7 @@ function HasOpenAIKey() {
                     secret
                   </a>{' '}
                   named{' '}
-                  <code className="bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded text-red-600 dark:text-red-400 font-mono text-sm">
+                  <code className="bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded text-red-600 dark:text-red-400 font-mono">
                     OPENAI_API_KEY
                   </code>
                   . <br />
