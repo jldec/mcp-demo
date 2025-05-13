@@ -1,47 +1,39 @@
 # MCP Demo
+
 Simple hosted multiplayer chat with AI and MCP tools  
 Based on cloudflare/agents-starter - see [README-agent-starter.md](README-agent-starter.md)  
-NOTE: this repo assumes pnpm
+Minimal changes (modified .prettierrc to remove semicolons and trailing commas)
 
-## Working
-- running on cloudflare workers
-- login with cloudflare zero-trust access
+### To run locally
 
-## TODO next
+- `npm install`
+- configure openai key in `.dev.vars`
+- `npm run dev`
+
+### TODO next
+
 - add installable (remote) tools and remove built in tools
 - replace starter UI with simple monospace style (like https://jldec.me?chat)
 
-## Target for demo day 1
+### Basic demo
 
-- single chat room, single LLM
-- login
-- chat with AI
-- see other users in chat
-- add/list tools - manual config, remote url/sse
+- single multi-user persisted chat with one hardwired LLM
+- add/remove/list MCP servers via tool calls
+- AI answers every message
+- login (hosted version only)
 - use tools in chat
 - persist chat
 
-## day 2
+### MVP
 
-- add channels
-- add tools without redeploy
-- configure tools per channel
-- activity logs
-
-## after that
-
-- support other LLM APIs e.g. for deep search
-- run LLMs locally
-- search for topics using topic graph or RAG DB
-- channel content - published on (public or private) web pages
-- include channel content in AI context
-- integrate channels with slack - https://github.com/cloudflare/ai/tree/main/demos/mcp-slack-oauth
-- support for images
-- etc... the list above will change
+- navigate between spaces, one chat per space
+- support addressable LLM agents per space (like users)
+- configure different MCP servers per agent
+- user identity and authz on MCP tool calls
 
 ---
 
-## initial stack chosen for velocity
+Initial stack chosen for velocity
 
 ### cloudflare agents starter
 

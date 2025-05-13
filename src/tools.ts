@@ -5,8 +5,9 @@
 import { tool } from 'ai'
 import { z } from 'zod'
 
-import { agentContext } from './server'
-import { unstable_getSchedulePrompt, unstable_scheduleSchema } from 'agents/schedule'
+import type { Chat } from './server'
+import { getCurrentAgent } from 'agents'
+import { unstable_scheduleSchema } from 'agents/schedule'
 
 /**
  * Weather information tool that requires human confirmation
@@ -15,7 +16,7 @@ import { unstable_getSchedulePrompt, unstable_scheduleSchema } from 'agents/sche
  */
 const getWeatherInformation = tool({
   description: 'show the weather in a given city to the user',
-  parameters: z.object({ city: z.string() }),
+  parameters: z.object({ city: z.string() })
   // Omitting execute function makes this tool require human confirmation
 })
 
@@ -30,7 +31,7 @@ const getLocalTime = tool({
   execute: async ({ location }) => {
     console.log(`Getting local time for ${location}`)
     return '10am'
-  },
+  }
 })
 
 const scheduleTask = tool({
@@ -38,10 +39,8 @@ const scheduleTask = tool({
   parameters: unstable_scheduleSchema,
   execute: async ({ when, description }) => {
     // we can now read the agent context from the ALS store
-    const agent = agentContext.getStore()
-    if (!agent) {
-      throw new Error('No agent found')
-    }
+    const { agent } = getCurrentAgent<Chat>()
+
     function throwError(msg: string): string {
       throw new Error(msg)
     }
@@ -57,13 +56,13 @@ const scheduleTask = tool({
             ? when.cron // cron
             : throwError('not a valid schedule input')
     try {
-      agent.schedule(input!, 'executeTask', description)
+      agent!.schedule(input!, 'executeTask', description)
     } catch (error) {
       console.error('error scheduling task', error)
       return `Error scheduling task: ${error}`
     }
     return `Task scheduled for type "${when.type}" : ${input}`
-  },
+  }
 })
 
 /**
@@ -74,12 +73,10 @@ const getScheduledTasks = tool({
   description: 'List all tasks that have been scheduled',
   parameters: z.object({}),
   execute: async () => {
-    const agent = agentContext.getStore()
-    if (!agent) {
-      throw new Error('No agent found')
-    }
+    const { agent } = getCurrentAgent<Chat>()
+
     try {
-      const tasks = agent.getSchedules()
+      const tasks = agent!.getSchedules()
       if (!tasks || tasks.length === 0) {
         return 'No scheduled tasks found.'
       }
@@ -88,7 +85,7 @@ const getScheduledTasks = tool({
       console.error('Error listing scheduled tasks', error)
       return `Error listing scheduled tasks: ${error}`
     }
-  },
+  }
 })
 
 /**
@@ -98,21 +95,24 @@ const getScheduledTasks = tool({
 const cancelScheduledTask = tool({
   description: 'Cancel a scheduled task using its ID',
   parameters: z.object({
-    taskId: z.string().describe('The ID of the task to cancel'),
+    taskId: z.string().describe('The ID of the task to cancel')
   }),
   execute: async ({ taskId }) => {
-    const agent = agentContext.getStore()
-    if (!agent) {
-      throw new Error('No agent found')
-    }
+    const { agent } = getCurrentAgent<Chat>()
     try {
-      await agent.cancelSchedule(taskId)
+      await agent!.cancelSchedule(taskId)
       return `Task ${taskId} has been successfully canceled.`
     } catch (error) {
       console.error('Error canceling scheduled task', error)
       return `Error canceling task ${taskId}: ${error}`
     }
-  },
+  }
+})
+
+const getJurgenInfo = tool({
+  description: 'Get Jurgen Information',
+  parameters: z.object({ topic: z.string() })
+  // Omitting execute function makes this tool require human confirmation
 })
 
 /**
@@ -125,6 +125,7 @@ export const tools = {
   scheduleTask,
   getScheduledTasks,
   cancelScheduledTask,
+  getJurgenInfo
 }
 
 /**
@@ -137,4 +138,8 @@ export const executions = {
     console.log(`Getting weather information for ${city}`)
     return `The weather in ${city} is sunny`
   },
+  getJurgenInfo: async ({ topic }: { topic: string }) => {
+    console.log(`Getting Jurgen Info ${topic}`)
+    return `Jurgen Info ${topic}`
+  }
 }

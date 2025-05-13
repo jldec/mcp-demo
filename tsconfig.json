@@ -12,8 +12,8 @@
     "types": [
       "node",
       "vite/client",
-      "./worker-configuration.d.ts",
-      "@cloudflare/workers-types/2023-07-01"
+      "@cloudflare/workers-types/2023-07-01",
+      "./worker-configuration.d.ts"
     ],
     "noEmit": true,
     "isolatedModules": true,
@@ -21,6 +21,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "noUnusedLocals": true,
     "skipLibCheck": true
   },
   "exclude": ["tests"]

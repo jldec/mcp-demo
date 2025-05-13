@@ -2,26 +2,26 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "mcp-demo",
   "main": "src/server.ts",
-  "compatibility_date": "2025-02-04",
+  "compatibility_date": "2025-05-07",
   "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "assets": {
-    "directory": "public",
+    "directory": "public"
   },
   "durable_objects": {
     "bindings": [
       {
         "name": "Chat",
-        "class_name": "Chat",
-      },
-    ],
+        "class_name": "Chat"
+      }
+    ]
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["Chat"],
-    },
+      "new_sqlite_classes": ["Chat"]
+    }
   ],
   "observability": {
-    "enabled": true,
-  },
+    "enabled": true
+  }
 }

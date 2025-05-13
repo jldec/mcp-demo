@@ -2,22 +2,25 @@ import { useEffect, useState, useRef, useCallback, use } from 'react'
 import { useAgent } from 'agents/react'
 import { useAgentChat } from 'agents/ai-react'
 import type { Message } from '@ai-sdk/react'
-import { APPROVAL } from './shared'
 import type { tools } from './tools'
 
 // Component imports
 import { Button } from '@/components/button/Button'
 import { Card } from '@/components/card/Card'
-import { Input } from '@/components/input/Input'
 import { Avatar } from '@/components/avatar/Avatar'
 import { Toggle } from '@/components/toggle/Toggle'
-import { Tooltip } from '@/components/tooltip/Tooltip'
+import { Textarea } from '@/components/textarea/Textarea'
+import { MemoizedMarkdown } from '@/components/memoized-markdown'
+import { ToolInvocationCard } from '@/components/tool-invocation-card/ToolInvocationCard'
 
 // Icon imports
-import { Bug, Moon, PaperPlaneRight, Robot, Sun, Trash } from '@phosphor-icons/react'
+import { Bug, Moon, Robot, Sun, Trash, PaperPlaneTilt, Stop } from '@phosphor-icons/react'
 
 // List of tools that require human confirmation
-const toolsRequiringConfirmation: (keyof typeof tools)[] = ['getWeatherInformation']
+const toolsRequiringConfirmation: (keyof typeof tools)[] = [
+  'getWeatherInformation',
+  'getJurgenInfo'
+]
 
 export default function Chat() {
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -26,6 +29,7 @@ export default function Chat() {
     return (savedTheme as 'dark' | 'light') || 'dark'
   })
   const [showDebug, setShowDebug] = useState(false)
+  const [textareaHeight, setTextareaHeight] = useState('auto')
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = useCallback(() => {
@@ -57,7 +61,7 @@ export default function Chat() {
   }
 
   const agent = useAgent({
-    agent: 'chat',
+    agent: 'chat'
   })
 
   const {
@@ -67,9 +71,11 @@ export default function Chat() {
     handleSubmit: handleAgentSubmit,
     addToolResult,
     clearHistory,
+    isLoading,
+    stop
   } = useAgentChat({
     agent,
-    maxSteps: 5,
+    maxSteps: 5
   })
 
   // Scroll to bottom when messages change
@@ -91,10 +97,10 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-[100vh] w-full flex justify-center items-center bg-fixed overflow-hidden">
+    <div className="h-[100vh] w-full p-4 flex justify-center items-center bg-fixed overflow-hidden">
       <HasOpenAIKey />
-      <div className="h-[100vh] w-full flex flex-col overflow-hidden relative">
-        <div className="px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
+      <div className="h-[calc(100vh-2rem)] w-full mx-auto max-w-lg flex flex-col shadow-xl rounded-md overflow-hidden relative border border-neutral-300 dark:border-neutral-800">
+        <div className="px-4 py-3 border-b border-neutral-300 dark:border-neutral-800 flex items-center gap-3 sticky top-0 z-10">
           <div className="flex items-center justify-center h-8 w-8">
             <svg width="28px" height="28px" className="text-[#F48120]" data-icon="agents">
               <title>Cloudflare Agents</title>
@@ -152,10 +158,10 @@ export default function Chat() {
                     <Robot size={24} />
                   </div>
                   <h3 className="font-semibold text-lg">Welcome to AI Chat</h3>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Start a conversation with your AI assistant. Try asking about:
                   </p>
-                  <ul className="text-left space-y-2">
+                  <ul className="text-sm text-left space-y-2">
                     <li className="flex items-center gap-2">
                       <span className="text-[#F48120]">•</span>
                       <span>Weather information for any city</span>
@@ -173,12 +179,11 @@ export default function Chat() {
           {agentMessages.map((m: Message, index) => {
             const isUser = m.role === 'user'
             const showAvatar = index === 0 || agentMessages[index - 1]?.role !== m.role
-            const showRole = showAvatar && !isUser
 
             return (
               <div key={m.id}>
                 {showDebug && (
-                  <pre className="text-muted-foreground overflow-scroll">
+                  <pre className="text-xs text-muted-foreground overflow-scroll">
                     {JSON.stringify(m, null, 2)}
                   </pre>
                 )}
@@ -197,7 +202,7 @@ export default function Chat() {
                         {m.parts?.map((part, i) => {
                           if (part.type === 'text') {
                             return (
-                              // biome-ignore lint/suspicious/noArrayIndexKey: it's fine here
+                              // biome-ignore lint/suspicious/noArrayIndexKey: immutable index
                               <div key={i}>
                                 <Card
                                   className={`p-3 rounded-md bg-neutral-100 dark:bg-neutral-900 ${
@@ -213,9 +218,10 @@ export default function Chat() {
                                   {part.text.startsWith('scheduled message') && (
                                     <span className="absolute -top-3 -left-2 text-base">🕒</span>
                                   )}
-                                  <p className="whitespace-pre-wrap">
-                                    {part.text.replace(/^scheduled message: /, '')}
-                                  </p>
+                                  <MemoizedMarkdown
+                                    id={`${m.id}-${i}`}
+                                    content={part.text.replace(/^scheduled message: /, '')}
+                                  />
                                 </Card>
                                 <p
                                   className={`text-xs text-muted-foreground mt-1 ${
@@ -231,67 +237,23 @@ export default function Chat() {
                           if (part.type === 'tool-invocation') {
                             const toolInvocation = part.toolInvocation
                             const toolCallId = toolInvocation.toolCallId
+                            const needsConfirmation = toolsRequiringConfirmation.includes(
+                              toolInvocation.toolName as keyof typeof tools
+                            )
 
-                            if (
-                              toolsRequiringConfirmation.includes(
-                                toolInvocation.toolName as keyof typeof tools
-                              ) &&
-                              toolInvocation.state === 'call'
-                            ) {
-                              return (
-                                <Card
-                                  // biome-ignore lint/suspicious/noArrayIndexKey: it's fine here
-                                  key={i}
-                                  className="p-4 my-3 rounded-md bg-neutral-100 dark:bg-neutral-900"
-                                >
-                                  <div className="flex items-center gap-2 mb-3">
-                                    <div className="bg-[#F48120]/10 p-1.5 rounded-full">
-                                      <Robot size={16} className="text-[#F48120]" />
-                                    </div>
-                                    <h4 className="font-medium">{toolInvocation.toolName}</h4>
-                                  </div>
+                            // Skip rendering the card in debug mode
+                            if (showDebug) return null
 
-                                  <div className="mb-3">
-                                    <h5 className="font-medium mb-1 text-muted-foreground">
-                                      Arguments:
-                                    </h5>
-                                    <pre className="bg-background/80 p-2 rounded-md overflow-auto">
-                                      {JSON.stringify(toolInvocation.args, null, 2)}
-                                    </pre>
-                                  </div>
-
-                                  <div className="flex gap-2 justify-end">
-                                    <Button
-                                      variant="primary"
-                                      size="sm"
-                                      onClick={() =>
-                                        addToolResult({
-                                          toolCallId,
-                                          result: APPROVAL.NO,
-                                        })
-                                      }
-                                    >
-                                      Reject
-                                    </Button>
-                                    <Tooltip content={'Accept action'}>
-                                      <Button
-                                        variant="primary"
-                                        size="sm"
-                                        onClick={() =>
-                                          addToolResult({
-                                            toolCallId,
-                                            result: APPROVAL.YES,
-                                          })
-                                        }
-                                      >
-                                        Approve
-                                      </Button>
-                                    </Tooltip>
-                                  </div>
-                                </Card>
-                              )
-                            }
-                            return null
+                            return (
+                              <ToolInvocationCard
+                                // biome-ignore lint/suspicious/noArrayIndexKey: using index is safe here as the array is static
+                                key={`${toolCallId}-${i}`}
+                                toolInvocation={toolInvocation}
+                                toolCallId={toolCallId}
+                                needsConfirmation={needsConfirmation}
+                                addToolResult={addToolResult}
+                              />
+                            )
                           }
                           return null
                         })}
@@ -307,47 +269,69 @@ export default function Chat() {
 
         {/* Input Area */}
         <form
-          onSubmit={(e) =>
+          onSubmit={(e) => {
+            e.preventDefault()
             handleAgentSubmit(e, {
               data: {
                 annotations: {
-                  hello: 'world',
-                },
-              },
+                  hello: 'world'
+                }
+              }
             })
-          }
-          className="p-3 bg-input-background absolute bottom-0 left-0 right-0 z-10"
+            setTextareaHeight('auto') // Reset height after submission
+          }}
+          className="p-3 bg-neutral-50 absolute bottom-0 left-0 right-0 z-10 border-t border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900"
         >
           <div className="flex items-center gap-2">
             <div className="flex-1 relative">
-              <Input
+              <Textarea
                 disabled={pendingToolCallConfirmation}
                 placeholder={
                   pendingToolCallConfirmation
                     ? 'Please respond to the tool confirmation above...'
-                    : 'Type your message...'
+                    : 'Send a message...'
                 }
-                className="pl-4 pr-10 py-2 w-full rounded-full"
+                className="flex w-full border border-neutral-200 dark:border-neutral-700 px-3 py-2 ring-offset-background placeholder:text-neutral-500 dark:placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-300 dark:focus-visible:ring-neutral-700 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base pb-10 dark:bg-neutral-900"
                 value={agentInput}
-                onChange={handleAgentInputChange}
+                onChange={(e) => {
+                  handleAgentInputChange(e)
+                  // Auto-resize the textarea
+                  e.target.style.height = 'auto'
+                  e.target.style.height = `${e.target.scrollHeight}px`
+                  setTextareaHeight(`${e.target.scrollHeight}px`)
+                }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
+                  if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
                     e.preventDefault()
                     handleAgentSubmit(e as unknown as React.FormEvent)
+                    setTextareaHeight('auto') // Reset height on Enter submission
                   }
                 }}
-                onValueChange={undefined}
+                rows={2}
+                style={{ height: textareaHeight }}
               />
+              <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end">
+                {isLoading ? (
+                  <button
+                    type="button"
+                    onClick={stop}
+                    className="inline-flex items-center cursor-pointer justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full p-1.5 h-fit border border-neutral-200 dark:border-neutral-800"
+                    aria-label="Stop generation"
+                  >
+                    <Stop size={16} />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="inline-flex items-center cursor-pointer justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full p-1.5 h-fit border border-neutral-200 dark:border-neutral-800"
+                    disabled={pendingToolCallConfirmation || !agentInput.trim()}
+                    aria-label="Send message"
+                  >
+                    <PaperPlaneTilt size={16} />
+                  </button>
+                )}
+              </div>
             </div>
-
-            <Button
-              type="submit"
-              shape="square"
-              className="rounded-full h-10 w-10 flex-shrink-0"
-              disabled={pendingToolCallConfirmation || !agentInput.trim()}
-            >
-              <PaperPlaneRight size={16} />
-            </Button>
           </div>
         </form>
       </div>
@@ -405,7 +389,7 @@ function HasOpenAIKey() {
                     secret
                   </a>{' '}
                   named{' '}
-                  <code className="bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded text-red-600 dark:text-red-400 font-mono">
+                  <code className="bg-red-100 dark:bg-red-900/30 px-1.5 py-0.5 rounded text-red-600 dark:text-red-400 font-mono text-sm">
                     OPENAI_API_KEY
                   </code>
                   . <br />
