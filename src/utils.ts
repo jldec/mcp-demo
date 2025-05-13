@@ -5,7 +5,7 @@ import {
   convertToCoreMessages,
   type DataStreamWriter,
   type ToolExecutionOptions,
-  type ToolSet,
+  type ToolSet
 } from 'ai'
 import type { z } from 'zod'
 import { APPROVAL } from './shared'
@@ -32,11 +32,11 @@ export async function processToolCalls<
   ExecutableTools extends {
     // biome-ignore lint/complexity/noBannedTypes: it's fine
     [Tool in keyof Tools as Tools[Tool] extends { execute: Function } ? never : Tool]: Tools[Tool]
-  },
+  }
 >({
   dataStream,
   messages,
-  executions,
+  executions
 }: {
   tools: Tools // used for type inference
   dataStream: DataStreamWriter
@@ -75,7 +75,7 @@ export async function processToolCalls<
         if (toolInstance) {
           result = await toolInstance(toolInvocation.args, {
             messages: convertToCoreMessages(messages),
-            toolCallId: toolInvocation.toolCallId,
+            toolCallId: toolInvocation.toolCallId
           })
         } else {
           result = 'Error: No execute function found on tool'
@@ -91,7 +91,7 @@ export async function processToolCalls<
       dataStream.write(
         formatDataStreamPart('tool_result', {
           toolCallId: toolInvocation.toolCallId,
-          result,
+          result
         })
       )
 
@@ -100,8 +100,8 @@ export async function processToolCalls<
         ...part,
         toolInvocation: {
           ...toolInvocation,
-          result,
-        },
+          result
+        }
       }
     })
   )

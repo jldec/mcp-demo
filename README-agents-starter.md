@@ -1,23 +1,10 @@
 # 🤖 Chat Agent Starter Kit
 
+![agents-header](https://github.com/user-attachments/assets/f6d99eeb-1803-4495-9c5e-3cf07a37b402)
+
+<a href="https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/agents-starter"><img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare"/></a>
+
 A starter template for building AI-powered chat agents using Cloudflare's Agent platform, powered by [`agents`](https://www.npmjs.com/package/agents). This project provides a foundation for creating interactive chat experiences with AI, complete with a modern UI and tool integration capabilities.
-
-## Modifications from original template
-
-- replace npm with pnpm - see https://pnpm.io/
-- added .npmrc to disable pnpm-lockfile.json
-- removed vitest and tests folder
-- removed .cursor/rules/cloudflare.mdc
-- removed .github/workflows/sanity-check.yml
-- removed biome linter
-- changed .prettierrc to use single quotes and spaces
-- reformatted files with prettier
-
-#### TODO
-
-- Replace OpenAI with a different, cheaper AI provider or a Cloudflare-hosted model
-- Don't commit the worker-configuration.d.ts with all the built-in types
-- UI font size is too small, and chat window is too narrow
 
 ## Features
 
@@ -39,13 +26,13 @@ A starter template for building AI-powered chat agents using Cloudflare's Agent 
 1. Create a new project:
 
 ```bash
-pnpm create cloudflare@latest --template cloudflare/agents-starter
+npm create cloudflare@latest -- --template cloudflare/agents-starter
 ```
 
 2. Install dependencies:
 
 ```bash
-pnpm install
+npm install
 ```
 
 3. Set up your environment:
@@ -59,13 +46,13 @@ OPENAI_API_KEY=your_openai_api_key
 4. Run locally:
 
 ```bash
-pnpm dev
+npm start
 ```
 
 5. Deploy:
 
 ```bash
-pnpm run ship
+npm run deploy
 ```
 
 ## Project Structure
@@ -147,7 +134,7 @@ The starting [`server.ts`](https://github.com/cloudflare/agents-starter/blob/mai
 For example, to use the [`workers-ai-provider`](https://sdk.vercel.ai/providers/community-providers/cloudflare-workers-ai), install the package:
 
 ```sh
-pnpm install workers-ai-provider
+npm install workers-ai-provider
 ```
 
 Add an `ai` binding to `wrangler.jsonc`:

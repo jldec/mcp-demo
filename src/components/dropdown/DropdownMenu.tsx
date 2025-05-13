@@ -16,19 +16,19 @@ const buttonVariants = cva(
           'border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
         secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        link: 'text-primary underline-offset-4 hover:underline'
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',
         sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
         lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        icon: 'size-9',
-      },
+        icon: 'size-9'
+      }
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default',
-    },
+      size: 'default'
+    }
   }
 )
 
@@ -71,7 +71,7 @@ const DropdownMenu = ({
   side,
   sideOffset,
   id,
-  size = 'base',
+  size = 'base'
 }: DropdownMenuProps) => (
   <DropdownMenuPrimitive.Root>
     <DropdownMenuPrimitive.Trigger
@@ -86,7 +86,7 @@ const DropdownMenu = ({
                 // shape: 'square',
                 // interaction: 'none',
                 class:
-                  'radix-state-open:text-neutral-950 dark:radix-state-open:text-white focus-visible:opacity-100',
+                  'radix-state-open:text-neutral-950 dark:radix-state-open:text-white focus-visible:opacity-100'
               }
             ),
         className
@@ -111,7 +111,7 @@ const DropdownMenu = ({
             'origin-top-left': align === 'start' && side === 'bottom',
             'origin-bottom-right': align === 'end' && side === 'top',
             'origin-bottom-left': align === 'start' && side === 'top',
-            'text-sm font-normal': size === 'sm',
+            'text-sm font-normal': size === 'sm'
           }
         )}
       >
@@ -150,7 +150,7 @@ const DropdownMenu = ({
                     {item.label}
                     <IconContext.Provider
                       value={{
-                        size: size === 'sm' ? 16 : 20,
+                        size: size === 'sm' ? 16 : 20
                       }}
                     >
                       {item.icon}
@@ -164,14 +164,14 @@ const DropdownMenu = ({
                       'radix-highlighted:bg-neutral-100 radix-highlighted:text-neutral-950 dark:radix-highlighted:bg-neutral-800 dark:radix-highlighted:text-white flex w-full items-center justify-between gap-5 rounded-md p-2.5 text-neutral-700 focus:outline-none dark:text-neutral-300',
                       {
                         'radix-highlighted:bg-red-50 radix-highlighted:text-red-600 dark:radix-highlighted:bg-red-500/10 dark:radix-highlighted:text-red-400 text-red-500 dark:text-red-400/90':
-                          item.destructiveAction,
+                          item.destructiveAction
                       }
                     )}
                   >
                     {item.label}
                     <IconContext.Provider
                       value={{
-                        size: size === 'sm' ? 16 : 20,
+                        size: size === 'sm' ? 16 : 20
                       }}
                     >
                       {item.icon}

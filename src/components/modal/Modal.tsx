@@ -19,7 +19,7 @@ export const Modal = ({
   children,
   clickOutsideToClose = false,
   isOpen,
-  onClose,
+  onClose
 }: ModalProps) => {
   const modalRef = clickOutsideToClose ? useClickOutside(onClose) : useRef<HTMLDivElement>(null)
 
