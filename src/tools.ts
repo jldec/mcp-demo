@@ -116,8 +116,8 @@ const addMCPServerUrl = tool({
 })
 
 const removeMCPServerUrl = tool({
-  description: 'remove a MCP server URL from the MCP client',
-  parameters: z.object({ url: z.string() })
+  description: 'remove a MCP server by id from the MCP client',
+  parameters: z.object({ id: z.string() })
   // Omitting execute function makes this tool require human confirmation
 })
 
@@ -125,8 +125,9 @@ const listMCPServers = tool({
   description: 'List all MCP server URLs known to the MCP client',
   parameters: z.object({}),
   execute: async () => {
-    // Dummy implementation: return a static list
-    return ['https://mcp1.example.com', 'https://mcp2.example.com']
+    const { agent } = getCurrentAgent<Chat>()
+    if (!agent) return 'No agent found'
+    return agent.mcp.mcpConnections
   }
 })
 
@@ -157,10 +158,24 @@ export const executions = {
   },
   addMCPServerUrl: async ({ url }: { url: string }) => {
     console.log(`Adding MCP server url: ${url}`)
-    return `Added MCP url: ${url}`
+    const { agent } = getCurrentAgent<Chat>()
+    try {
+      const { id } = await agent!.addMcpServer(url, url, 'mcp-demo-host')
+      return `Added MCP url: ${url} with id: ${id}`
+    } catch (error) {
+      console.error('Error adding MCP server url', error)
+      return `Error adding MCP url: ${error}`
+    }
   },
-  removeMCPServerUrl: async ({ url }: { url: string }) => {
-    console.log(`Removing MCP server url: ${url}`)
-    return `Removed MCP url: ${url}`
+  removeMCPServerUrl: async ({ id }: { id: string }) => {
+    console.log(`Removing MCP server with id: ${id}`)
+    const { agent } = getCurrentAgent<Chat>()
+    try {
+      agent!.removeMcpServer(id)
+      return `Removed MCP with id: ${id}`
+    } catch (error) {
+      console.error('Error removing MCP server with id', error)
+      return `Error removing MCP with id: ${error}`
+    }
   }
 }

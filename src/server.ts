@@ -11,6 +11,7 @@ import {
 import { openai } from '@ai-sdk/openai'
 import { processToolCalls } from './utils'
 import { tools, executions } from './tools'
+
 // import { env } from "cloudflare:workers";
 
 const model = openai('gpt-4o-2024-11-20')
@@ -28,7 +29,6 @@ export class Chat extends AIChatAgent<Env> {
    * Handles incoming chat messages and manages the response stream
    * @param onFinish - Callback function executed when streaming completes
    */
-
   async onChatMessage(
     onFinish: StreamTextOnFinishCallback<ToolSet>,
     options?: { abortSignal?: AbortSignal }
