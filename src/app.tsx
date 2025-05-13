@@ -19,7 +19,8 @@ import { Bug, Moon, Robot, Sun, Trash, PaperPlaneTilt, Stop } from '@phosphor-ic
 // List of tools that require human confirmation
 const toolsRequiringConfirmation: (keyof typeof tools)[] = [
   'getWeatherInformation',
-  'getJurgenInfo'
+  'addMCPServerUrl',
+  'removeMCPServerUrl'
 ]
 
 export default function Chat() {

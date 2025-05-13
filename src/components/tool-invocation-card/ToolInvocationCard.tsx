@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Robot, CaretDown } from '@phosphor-icons/react'
 import { Button } from '@/components/button/Button'
 import { Card } from '@/components/card/Card'
-import { Tooltip } from '@/components/tooltip/Tooltip'
 import { APPROVAL } from '@/shared'
 
 interface ToolInvocation {
@@ -84,20 +83,18 @@ export function ToolInvocationCard({
               >
                 Reject
               </Button>
-              <Tooltip content={'Accept action'}>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() =>
-                    addToolResult({
-                      toolCallId,
-                      result: APPROVAL.YES
-                    })
-                  }
-                >
-                  Approve
-                </Button>
-              </Tooltip>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() =>
+                  addToolResult({
+                    toolCallId,
+                    result: APPROVAL.YES
+                  })
+                }
+              >
+                Approve
+              </Button>
             </div>
           )}
 
