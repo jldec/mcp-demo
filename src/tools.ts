@@ -109,10 +109,25 @@ const cancelScheduledTask = tool({
   }
 })
 
-const getJurgenInfo = tool({
-  description: 'Get Jurgen Information',
-  parameters: z.object({ topic: z.string() })
+const addMCPServerUrl = tool({
+  description: 'add a MCP server URL to the MCP client',
+  parameters: z.object({ url: z.string() })
   // Omitting execute function makes this tool require human confirmation
+})
+
+const removeMCPServerUrl = tool({
+  description: 'remove a MCP server URL from the MCP client',
+  parameters: z.object({ url: z.string() })
+  // Omitting execute function makes this tool require human confirmation
+})
+
+const listMCPServers = tool({
+  description: 'List all MCP server URLs known to the MCP client',
+  parameters: z.object({}),
+  execute: async () => {
+    // Dummy implementation: return a static list
+    return ['https://mcp1.example.com', 'https://mcp2.example.com']
+  }
 })
 
 /**
@@ -125,7 +140,9 @@ export const tools = {
   scheduleTask,
   getScheduledTasks,
   cancelScheduledTask,
-  getJurgenInfo
+  addMCPServerUrl,
+  removeMCPServerUrl,
+  listMCPServers
 }
 
 /**
@@ -138,8 +155,12 @@ export const executions = {
     console.log(`Getting weather information for ${city}`)
     return `The weather in ${city} is sunny`
   },
-  getJurgenInfo: async ({ topic }: { topic: string }) => {
-    console.log(`Getting Jurgen Info ${topic}`)
-    return `Jurgen Info ${topic}`
+  addMCPServerUrl: async ({ url }: { url: string }) => {
+    console.log(`Adding MCP server url: ${url}`)
+    return `Added MCP url: ${url}`
+  },
+  removeMCPServerUrl: async ({ url }: { url: string }) => {
+    console.log(`Removing MCP server url: ${url}`)
+    return `Removed MCP url: ${url}`
   }
 }
