@@ -1,7 +1,5 @@
 import { routeAgentRequest, type Schedule } from 'agents'
 
-import { unstable_getSchedulePrompt } from 'agents/schedule'
-
 import { AIChatAgent } from 'agents/ai-chat-agent'
 import {
   createDataStreamResponse,
@@ -60,7 +58,7 @@ export class Chat extends AIChatAgent<Env> {
         // Stream the AI response using GPT-4
         const result = streamText({
           model,
-          system: `You are a helpful assistant that can do various tasks.`,
+          system: 'You are a helpful assistant that can do various tasks.',
           messages: processedMessages,
           tools: allTools,
           onFinish: async (args) => {
