@@ -171,6 +171,7 @@ export const executions = {
     console.log(`Removing MCP server with id: ${id}`)
     const { agent } = getCurrentAgent<Chat>()
     try {
+      agent!.mcp.closeConnection(id)
       agent!.removeMcpServer(id)
       return `Removed MCP with id: ${id}`
     } catch (error) {
